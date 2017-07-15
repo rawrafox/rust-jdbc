@@ -1,7 +1,7 @@
 use jvm::*;
 
 #[derive(Clone, Debug)]
-pub(crate) struct Method {
+pub struct Method {
   environment: Environment,
   handle: jmethodID
 }

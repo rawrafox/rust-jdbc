@@ -3,7 +3,7 @@ use std;
 use jvm::*;
 
 #[derive(Debug)]
-pub(crate) struct Class {
+pub struct Class {
   environment: Environment,
   handle: jclass
 }
@@ -13,7 +13,7 @@ impl Class {
     return Class { environment: environment.clone(), handle: environment.retain(handle) };
   }
 
-  pub fn get_method(&self, name: &str, signature: &str) -> Result<Method, Throwable> {
+  pub fn get_method(&self, name: &str, signature: &str) -> Result<Method, Object> {
     let env = self.environment.as_handle();
 
     let name = std::ffi::CString::new(name).unwrap();
@@ -27,7 +27,7 @@ impl Class {
     }
   }
 
-  pub fn get_static_method(&self, name: &str, signature: &str) -> Result<Method, Throwable> {
+  pub fn get_static_method(&self, name: &str, signature: &str) -> Result<Method, Object> {
     let env = self.environment.as_handle();
 
     let name = std::ffi::CString::new(name).unwrap();
@@ -41,7 +41,7 @@ impl Class {
     }
   }
 
-  pub unsafe fn call_object_method(&self, method: &Method, arguments: &[&Value]) -> Result<Option<Object>, Throwable> {
+  pub unsafe fn call_object_method(&self, method: &Method, arguments: &[&Value]) -> Result<Option<Object>, Object> {
     let env = self.environment.as_handle();
 
     let args : Vec<jvalue> = arguments.iter().map(|x| { x.as_handle() }).collect();

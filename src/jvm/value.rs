@@ -5,7 +5,7 @@ use jni_sys::*;
 use jvm::*;
 
 #[derive(Clone)]
-pub(crate) struct Value<'a> {
+pub struct Value<'a> {
   handle: jvalue,
   _data: std::marker::PhantomData<&'a jvalue>
 }
