@@ -23,21 +23,10 @@ impl ResultSetObject {
   }
 
   pub fn get_meta_data(&self) -> Result<ResultSetMetaDataObject, Throwable> {
-    let method = self.class.get_method("getMetaData", "()Ljava/sql/ResultSetMetaData;").unwrap();
-
-    match unsafe { self.object.call_object_method(&method, &[]) } {
-      Ok(o) => return Ok(ResultSetMetaDataObject::new(&self.environment, o.unwrap())),
-      Err(e) => return Err(e)
-    }
+    return java_call!(nonnull ResultSetMetaDataObject: self, "getMetaData", "()Ljava/sql/ResultSetMetaData;", &[]);
   }
-  
 
   pub fn get_string(&self, index: i32) -> Result<Option<std::string::String>, Throwable> {
-    let method = self.class.get_method("getString", "(I)Ljava/lang/String;").unwrap();
-
-    match unsafe { self.object.call_object_method(&method, &[&index.to_value()]) } {
-      Ok(o) => return Ok(o.map({ |h| unsafe { String::from_object(h) }.to_string() })),
-      Err(e) => return Err(e)
-    }
+    return java_call!(string: self, "getString", "(I)Ljava/lang/String;", &[&index.to_value()]);
   }
 }

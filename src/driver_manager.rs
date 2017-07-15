@@ -14,13 +14,8 @@ impl DriverManager {
   }
 
   pub fn get_connection(&self, url: &str) -> Result<ConnectionObject, Throwable> {
-    let method = self.class.get_static_method("getConnection", "(Ljava/lang/String;)Ljava/sql/Connection;").unwrap();
-
     let url = String::from_str(&self.environment, url);
 
-    match unsafe { self.class.call_object_method(&method, &[&url.to_value()]) } {
-      Ok(o) => return Ok(ConnectionObject::new(&self.environment, o)),
-      Err(e) => return Err(e)
-    }
+    return java_call!(static, nonnull ConnectionObject: self, "getConnection", "(Ljava/lang/String;)Ljava/sql/Connection;", &[&url.to_value()]);
   }
 }

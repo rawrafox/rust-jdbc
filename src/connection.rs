@@ -15,11 +15,6 @@ impl ConnectionObject {
   }
 
   pub fn create_statement(&self) -> Result<StatementObject, Throwable> {
-    let method = self.class.get_method("createStatement", "()Ljava/sql/Statement;").unwrap();
-
-    match unsafe { self.object.call_object_method(&method, &[]) } {
-      Ok(o) => return Ok(StatementObject::new(&self.environment, o.unwrap())),
-      Err(e) => return Err(e)
-    }
+    return java_call!(nonnull StatementObject: self, "createStatement", "()Ljava/sql/Statement;", &[]);
   }
 }

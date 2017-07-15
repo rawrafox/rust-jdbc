@@ -41,7 +41,7 @@ impl Class {
     }
   }
 
-  pub unsafe fn call_object_method(&self, method: &Method, arguments: &[&Value]) -> Result<Object, Throwable> {
+  pub unsafe fn call_object_method(&self, method: &Method, arguments: &[&Value]) -> Result<Option<Object>, Throwable> {
     let env = self.environment.as_handle();
 
     let args : Vec<jvalue> = arguments.iter().map(|x| { x.as_handle() }).collect();
@@ -50,7 +50,11 @@ impl Class {
 
     match self.environment.check_jvm_exception() {
       Some(e) => return Err(e),
-      None => return Ok(Object::from_handle(&self.environment, handle))
+      None => if handle.is_null() {
+        return Ok(None);
+      } else {
+        return Ok(Some(Object::from_handle(&self.environment, handle)))
+      }
     }
   }
 }

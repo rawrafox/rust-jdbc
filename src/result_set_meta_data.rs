@@ -14,8 +14,6 @@ impl ResultSetMetaDataObject {
   }
 
   pub fn get_column_count(&self) -> Result<i32, Throwable> {
-    let method = self.class.get_method("getColumnCount", "()I").unwrap();
-
-    return unsafe { self.object.call_int_method(&method, &[]) };
+    return java_call!(int: self, "getColumnCount", "()I", &[]);
   }
 }

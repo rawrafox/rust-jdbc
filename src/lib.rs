@@ -12,6 +12,43 @@ extern crate jni_sys;
 #[link(name="jvm")]
 extern { }
 
+macro_rules! java_call {
+  (static, nonnull $rty:tt: $s:expr, $name:expr, $sig:expr, $args:expr) => ({
+    let method = $s.class.get_static_method($name, $sig).unwrap();
+
+    match unsafe { $s.class.call_object_method(&method, $args) } {
+      Ok(o) => Ok($rty::new(&$s.environment, o.unwrap())),
+      Err(e) => Err(e)
+    }
+  });
+  (bool: $s:expr, $name:expr, $sig:expr, $args:expr) => ({
+    let method = $s.class.get_method($name, $sig).unwrap();
+
+    unsafe { $s.object.call_bool_method(&method, $args) }
+  });
+  (int: $s:expr, $name:expr, $sig:expr, $args:expr) => ({
+    let method = $s.class.get_method($name, $sig).unwrap();
+
+    unsafe { $s.object.call_int_method(&method, $args) }
+  });
+  (string: $s:expr, $name:expr, $sig:expr, $args:expr) => ({
+    let method = $s.class.get_method($name, $sig).unwrap();
+
+    match unsafe { $s.object.call_object_method(&method, $args) } {
+      Ok(o) => Ok(o.map({ |h| unsafe { String::from_object(h) }.to_string() })),
+      Err(e) => Err(e)
+    }
+  });
+  (nonnull $rty:tt: $s:expr, $name:expr, $sig:expr, $args:expr) => ({
+    let method = $s.class.get_method($name, $sig).unwrap();
+
+    match unsafe { $s.object.call_object_method(&method, $args) } {
+      Ok(o) => Ok($rty::new(&$s.environment, o.unwrap())),
+      Err(e) => Err(e)
+    }
+  })
+}
+
 mod connection;
 mod context;
 mod driver_manager;
