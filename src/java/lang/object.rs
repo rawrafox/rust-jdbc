@@ -1,6 +1,7 @@
 use std;
 use java;
 use jvm;
+use jvm::ToValue;
 
 jvm_object!(Object, "java/lang/Object");
 
@@ -11,12 +12,29 @@ pub trait IObject {
   fn as_jvm_object(&self) -> &jvm::Object;
 
   fn jvm_class() -> jvm::Class {
-    return jvm::current_environment().unwrap().get_class(Self::CLASS_NAME).unwrap();
+    return jvm::get_env().get_class(Self::CLASS_NAME).unwrap();
   }
+
+  fn equals<T: IObject>(&self, other: &T) -> java::Result<bool> {
+    return jvm_call!(bool: self, "equals", "(Ljava/lang/Object;)Z", &[&other.to_value()]);
+  }
+
+  // TODO: getClass()
+
+  fn hash_code(&self) -> java::Result<i32> {
+    return jvm_call!(int: self, "hashCode", "()I", &[]);
+  }
+
+  // TODO: notify()
+  // TODO: notifyAll()
 
   fn to_string(&self) -> java::Result<Option<std::string::String>> {
     return jvm_call!(string: self, "toString", "()Ljava/lang/String;", &[]);
   }
+
+  // TODO: wait()
+  // TODO: wait(long timeout)
+  // TODO: wait(long timeout, int nanos)
 }
 
 impl<'a, T: IObject> jvm::ToValue<'a> for &'a T {

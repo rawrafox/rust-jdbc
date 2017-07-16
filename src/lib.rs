@@ -17,7 +17,7 @@ extern { }
 macro_rules! jvm_object {
   ($name:ident, $full_name:expr) => (
     pub struct $name(jvm::Object);
-    
+
     impl java::lang::IObject for $name {
       const CLASS_NAME: &'static str = $full_name;
 
@@ -32,6 +32,12 @@ macro_rules! jvm_object {
           Ok(Some(s)) => write!(f, "{} {{ {} }}", Self::CLASS_NAME, s),
           Err(_) => write!(f, "{} {{ ERROR }}", Self::CLASS_NAME)
         }
+      }
+    }
+
+    impl<T: java::lang::IObject> std::cmp::PartialEq<T> for $name {
+      fn eq(&self, other: &T) -> bool {
+        return self.equals(other).unwrap_or(false);
       }
     }
   )

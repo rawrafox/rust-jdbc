@@ -13,7 +13,7 @@ impl Object {
   }
 
   pub unsafe fn call_void_method(&self, method: &Method, arguments: &[&Value]) -> Result<(), Object> {
-    let environment = current_environment().unwrap();
+    let environment = get_env();
     let env = environment.as_handle();
 
     let args : Vec<jvalue> = arguments.iter().map(|x| { x.as_handle() }).collect();
@@ -27,7 +27,7 @@ impl Object {
   }
 
   pub unsafe fn call_bool_method(&self, method: &Method, arguments: &[&Value]) -> Result<bool, Object> {
-    let environment = current_environment().unwrap();
+    let environment = get_env();
     let env = environment.as_handle();
 
     let args : Vec<jvalue> = arguments.iter().map(|x| { x.as_handle() }).collect();
@@ -41,7 +41,7 @@ impl Object {
   }
 
   pub unsafe fn call_int_method(&self, method: &Method, arguments: &[&Value]) -> Result<i32, Object> {
-    let environment = current_environment().unwrap();
+    let environment = get_env();
     let env = environment.as_handle();
 
     let args : Vec<jvalue> = arguments.iter().map(|x| { x.as_handle() }).collect();
@@ -55,7 +55,7 @@ impl Object {
   }
 
   pub unsafe fn call_object_method(&self, method: &Method, arguments: &[&Value]) -> Result<Option<Object>, Object> {
-    let environment = current_environment().unwrap();
+    let environment = get_env();
     let env = environment.as_handle();
 
     let args : Vec<jvalue> = arguments.iter().map(|x| { x.as_handle() }).collect();
@@ -75,7 +75,7 @@ impl Object {
 
 impl Drop for Object {
   fn drop(&mut self) {
-    let env = current_environment().unwrap().as_handle();
+    let env = get_env().as_handle();
 
     unsafe { (**env).DeleteGlobalRef.unwrap()(env, self.0) };
   }

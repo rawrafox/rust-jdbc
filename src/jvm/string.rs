@@ -19,7 +19,7 @@ impl String {
   }
 
   pub fn from_str(string: &str) -> String {
-    let environment = current_environment().unwrap();
+    let environment = get_env();
     let env = environment.as_handle();
 
     let string = std::ffi::CString::new(string).unwrap();
@@ -30,7 +30,7 @@ impl String {
   }
 
   pub fn to_string(&self) -> std::string::String {
-    let env = current_environment().unwrap().as_handle();
+    let env = get_env().as_handle();
 
     return unsafe {
       let ptr = (**env).GetStringUTFChars.unwrap()(env, self.0, std::ptr::null_mut());
@@ -46,7 +46,7 @@ impl String {
 
 impl Drop for String {
   fn drop(&mut self) {
-    let env = current_environment().unwrap().as_handle();
+    let env = get_env().as_handle();
 
     unsafe { (**env).DeleteGlobalRef.unwrap()(env, self.0) };
   }

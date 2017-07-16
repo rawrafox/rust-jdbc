@@ -138,3 +138,7 @@ pub fn global_jvm() -> Option<JVM> {
 pub fn current_environment() -> Option<Environment> {
   return global_jvm().and_then(|jvm| jvm.current_environment());
 }
+
+pub(crate) fn get_env() -> Environment {
+  return current_environment().expect("Current thread was never attached to the JVM");
+}
