@@ -20,29 +20,24 @@ extern crate jdbc;
 Then you can in your main function do something like this:
 
 ```rust
-  let jvm_options = ["-Djava.class.path=./jars/postgresql-42.1.1.jar", "-Xcheck:jni"];
-  let context = unsafe { jdbc::Context::from_options(&jvm_options) };
-  
-  let driver_manager = context.driver_manager();
+let jvm_options = ["-Djava.class.path=./jars/postgresql-42.1.1.jar", "-Xcheck:jni"];
+let _ = unsafe { jvm::JVM::from_options(&jvm_options) };
 
-  let url = "jdbc:postgresql://localhost/test";
+let url = "jdbc:postgresql://localhost/test";
 
-  let connection = driver_manager.get_connection(url).unwrap();
-  let statement = connection.create_statement().unwrap();
-  let result_set = statement.execute_query("SELECT * FROM customers").unwrap();
-  let metadata = result_set.get_meta_data().unwrap();
+let connection = DriverManager::get_connection(url).unwrap();
+let statement = connection.create_statement().unwrap();
+let result_set = statement.execute_query("SELECT * FROM customers").unwrap();
+let metadata = result_set.get_meta_data().unwrap();
+let columns = metadata.get_column_count().unwrap();
 
-  let columns = metadata.get_column_count().unwrap();
-
-  println!("Columns: {}", columns);
-
-  while result_set.next().unwrap() {
-    print!("row:");
-    for i in 1 .. columns + 1 {
-      print!(" {:?}", result_set.get_string(i).unwrap());
-    }
-    println!("");
+while result_set.next().unwrap() {
+  print!("row:");
+  for i in 1 .. columns + 1 {
+    print!(" {:?}", result_set.get_string(i).unwrap());
   }
+  println!("");
+}
 ```
 
 ## What is jdbc? ##
