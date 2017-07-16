@@ -14,6 +14,29 @@ extern crate jni_sys;
 #[link(name="jvm")]
 extern { }
 
+macro_rules! jvm_object {
+  ($name:ident, $full_name:expr) => (
+    pub struct $name(jvm::Object);
+    
+    impl java::lang::IObject for $name {
+      const CLASS_NAME: &'static str = $full_name;
+
+      fn from_jvm_object(object: jvm::Object) -> Self { return Self { 0: object }; }
+      fn as_jvm_object(&self) -> &jvm::Object { return &self.0; }
+    }
+
+    impl std::fmt::Debug for $name {
+      fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self.to_string() {
+          Ok(None) => write!(f, "{} {{ null }}", Self::CLASS_NAME),
+          Ok(Some(s)) => write!(f, "{} {{ {} }}", Self::CLASS_NAME, s),
+          Err(_) => write!(f, "{} {{ ERROR }}", Self::CLASS_NAME)
+        }
+      }
+    }
+  )
+}
+
 macro_rules! jvm_call {
   (static, nonnull $rty:tt: $name:expr, $sig:expr, $args:expr) => ({
     let class = Self::jvm_class();

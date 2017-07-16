@@ -2,7 +2,9 @@ use std;
 use java;
 use jvm;
 
-pub trait Object {
+jvm_object!(Object, "java/lang/Object");
+
+pub trait IObject {
   const CLASS_NAME: &'static str;
 
   fn from_jvm_object(object: jvm::Object) -> Self;
@@ -17,7 +19,7 @@ pub trait Object {
   }
 }
 
-impl<'a, T: Object> jvm::ToValue<'a> for &'a T {
+impl<'a, T: IObject> jvm::ToValue<'a> for &'a T {
   fn to_value(&self) -> jvm::Value<'a> {
     return self.as_jvm_object().to_value();
   }
