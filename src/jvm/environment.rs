@@ -28,6 +28,19 @@ impl Environment {
     return global;
   }
 
+  pub fn ensure_local_capacity(&self, capacity: i32) -> Result<(), Object> {
+    let result = unsafe { (**self.0).EnsureLocalCapacity.unwrap()(self.0, capacity) };
+
+    return if result != 0 {
+      match self.check_jvm_exception() {
+        Some(e) => return Err(e),
+        None => panic!("Error signalled, but no exception found")
+      }
+    } else {
+      Ok(())
+    };
+  }
+
   pub fn get_class(&self, name: &str) -> Result<Class, Object> {
     let name = CString::new(name).unwrap();
 

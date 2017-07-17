@@ -34,6 +34,16 @@ impl<'a> ToValue<'a> for i32 {
   }
 }
 
+impl<'a> ToValue<'a> for i64 {
+  fn to_value(&self) -> Value<'a> {
+    let mut handle = jvalue::default();
+
+    unsafe { *handle.j() = *self };
+
+    return Value::from_handle(handle);
+  }
+}
+
 impl<'a> ToValue<'a> for Object {
   fn to_value(&self) -> Value<'a> {
     let mut handle = jvalue::default();

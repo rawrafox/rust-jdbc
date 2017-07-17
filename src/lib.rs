@@ -46,7 +46,7 @@ macro_rules! jvm_object {
 macro_rules! jvm_call {
   (static, nonnull $rty:tt: $name:expr, $sig:expr, $args:expr) => ({
     let class = Self::jvm_class();
-    let method = class.get_static_method($name, $sig).unwrap();
+    let method = class.get_static_method($name, $sig).unwrap_or_else(|e| panic!("Could not find static method {:?}", java::lang::Throwable::from_jvm_object(e)));
 
     match unsafe { class.call_object_method(&method, $args) } {
       Ok(o) => Ok($rty::from_jvm_object(o.unwrap())),
@@ -54,7 +54,7 @@ macro_rules! jvm_call {
     }
   });
   (void: $s:expr, $name:expr, $sig:expr, $args:expr) => ({
-    let method = Self::jvm_class().get_method($name, $sig).unwrap();
+    let method = Self::jvm_class().get_method($name, $sig).unwrap_or_else(|e| panic!("Could not find method {:?}", java::lang::Throwable::from_jvm_object(e)));
 
     match unsafe { $s.as_jvm_object().call_void_method(&method, $args) } {
       Ok(()) => Ok(()),
@@ -62,7 +62,7 @@ macro_rules! jvm_call {
     }
   });
   (bool: $s:expr, $name:expr, $sig:expr, $args:expr) => ({
-    let method = Self::jvm_class().get_method($name, $sig).unwrap();
+    let method = Self::jvm_class().get_method($name, $sig).unwrap_or_else(|e| panic!("Could not find method {:?}", java::lang::Throwable::from_jvm_object(e)));
 
     match unsafe { $s.as_jvm_object().call_bool_method(&method, $args) } {
       Ok(b) => Ok(b),
@@ -70,7 +70,7 @@ macro_rules! jvm_call {
     }
   });
   (int: $s:expr, $name:expr, $sig:expr, $args:expr) => ({
-    let method = Self::jvm_class().get_method($name, $sig).unwrap();
+    let method = Self::jvm_class().get_method($name, $sig).unwrap_or_else(|e| panic!("Could not find method {:?}", java::lang::Throwable::from_jvm_object(e)));
 
     match unsafe { $s.as_jvm_object().call_int_method(&method, $args) } {
       Ok(i) => Ok(i),
@@ -78,7 +78,7 @@ macro_rules! jvm_call {
     }
   });
   (string: $s:expr, $name:expr, $sig:expr, $args:expr) => ({
-    let method = Self::jvm_class().get_method($name, $sig).unwrap();
+    let method = Self::jvm_class().get_method($name, $sig).unwrap_or_else(|e| panic!("Could not find method {:?}", java::lang::Throwable::from_jvm_object(e)));
 
     match unsafe { $s.as_jvm_object().call_object_method(&method, $args) } {
       Ok(o) => Ok(o.map({ |h| unsafe { jvm::String::from_object(h) }.to_string() })),
@@ -86,7 +86,7 @@ macro_rules! jvm_call {
     }
   });
   (nonnull $rty:tt: $s:expr, $name:expr, $sig:expr, $args:expr) => ({
-    let method = Self::jvm_class().get_method($name, $sig).unwrap();
+    let method = Self::jvm_class().get_method($name, $sig).unwrap_or_else(|e| panic!("Could not find method {:?}", java::lang::Throwable::from_jvm_object(e)));
 
     match unsafe { $s.as_jvm_object().call_object_method(&method, $args) } {
       Ok(o) => Ok($rty::from_jvm_object(o.unwrap())),

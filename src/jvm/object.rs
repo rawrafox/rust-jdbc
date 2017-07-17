@@ -12,6 +12,24 @@ impl Object {
     return self.0;
   }
 
+  pub unsafe fn enter_monitor(&self) {
+    let env = get_env().as_handle();
+
+    match (**env).MonitorEnter.unwrap()(env, self.0) {
+      0 => (),
+      e => panic!("Failed to enter monitor with return value {}", e)
+    }
+  }
+
+  pub unsafe fn exit_monitor(&self) {
+    let env = get_env().as_handle();
+
+    match (**env).MonitorExit.unwrap()(env, self.0) {
+      0 => (),
+      e => panic!("Failed to enter monitor with return value {}", e)
+    }
+  }
+
   pub unsafe fn call_void_method(&self, method: &Method, arguments: &[&Value]) -> Result<(), Object> {
     let environment = get_env();
     let env = environment.as_handle();
@@ -72,6 +90,8 @@ impl Object {
     }
   }
 }
+
+unsafe impl Send for Object {}
 
 impl Drop for Object {
   fn drop(&mut self) {
