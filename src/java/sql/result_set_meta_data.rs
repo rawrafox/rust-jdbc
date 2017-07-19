@@ -6,7 +6,7 @@ use jvm::ToValue;
 
 jvm_object!(ResultSetMetaData, "java/sql/ResultSetMetaData");
 
-pub trait TResultSetMetaData : IObject /* + TWrapper */ {
+pub trait IResultSetMetaData : IObject /* + IWrapper */ {
   fn get_catalog_name(&self, column: i32) -> java::Result<Option<std::string::String>> {
     return jvm_call!(string: self, "getCatalogName", "(I)Ljava/lang/String;", &[&column.to_value()]);
   }
@@ -92,4 +92,4 @@ pub trait TResultSetMetaData : IObject /* + TWrapper */ {
   }
 }
 
-impl TResultSetMetaData for ResultSetMetaData {}
+impl IResultSetMetaData for ResultSetMetaData {}

@@ -12,7 +12,7 @@ pub trait IObject : Sized {
   fn as_jvm_object(&self) -> &jvm::Object;
 
   fn jvm_class() -> jvm::Class {
-    return jvm::get_env().get_class(Self::CLASS_NAME).unwrap();
+    return jvm::get_env().find_class(Self::CLASS_NAME).unwrap();
   }
 
   fn synchronize<'a>(&'a self) -> MonitorGuard<'a, Self> {

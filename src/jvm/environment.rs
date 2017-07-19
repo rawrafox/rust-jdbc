@@ -41,7 +41,7 @@ impl Environment {
     };
   }
 
-  pub fn get_class(&self, name: &str) -> Result<Class, Object> {
+  pub fn find_class(&self, name: &str) -> Result<Class, Object> {
     let name = CString::new(name).unwrap();
 
     let handle = unsafe { (**self.0).FindClass.unwrap()(self.0, name.as_ptr()) };
