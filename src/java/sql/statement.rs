@@ -1,9 +1,9 @@
 use std;
 use java;
+use java::ToValue;
 use java::lang::IObject;
 use java::sql::ResultSet;
 use jvm;
-use jvm::ToValue;
 
 jvm_object!(Statement, "java/sql/Statement");
 

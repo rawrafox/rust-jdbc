@@ -1,9 +1,9 @@
 use std;
 use java;
+use java::ToValue;
 use java::lang::IObject;
 use java::sql::ResultSetMetaData;
 use jvm;
-use jvm::ToValue;
 
 jvm_object!(ResultSet, "java/sql/ResultSet");
 

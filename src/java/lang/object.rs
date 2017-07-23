@@ -1,7 +1,7 @@
 use std;
 use java;
+use java::ToValue;
 use jvm;
-use jvm::ToValue;
 
 jvm_object!(Object, "java/lang/Object");
 
@@ -36,7 +36,7 @@ pub trait IObject : Sized {
   }
 }
 
-impl<'a, T: IObject> jvm::ToValue<'a> for &'a T {
+impl<'a, T: IObject> java::ToValue<'a> for &'a T {
   fn to_value(&self) -> jvm::Value<'a> {
     return self.as_jvm_object().to_value();
   }

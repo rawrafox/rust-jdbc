@@ -1,8 +1,8 @@
 use std;
 use java;
+use java::ToValue;
 use java::lang::IObject;
 use jvm;
-use jvm::ToValue;
 
 jvm_object!(ResultSetMetaData, "java/sql/ResultSetMetaData");
 

@@ -23,3 +23,31 @@ pub fn ensure_local_capacity(capacity: i32) -> Result<()> {
     Err(e) => Err(lang::Throwable::from_jvm_object(e))
   }
 }
+
+pub trait ToValue<'a> {
+  fn to_value(&self) -> jvm::Value<'a>;
+}
+
+impl<'a> ToValue<'a> for i32 {
+  fn to_value(&self) -> jvm::Value<'a> {
+    return jvm::Value::from_i32(*self);
+  }
+}
+
+impl<'a> ToValue<'a> for i64 {
+  fn to_value(&self) -> jvm::Value<'a> {
+    return jvm::Value::from_i64(*self);
+  }
+}
+
+impl<'a> ToValue<'a> for jvm::Object {
+  fn to_value(&self) -> jvm::Value<'a> {
+    return jvm::Value::from_object(self);
+  }
+}
+
+impl<'a> ToValue<'a> for jvm::String {
+  fn to_value(&self) -> jvm::Value<'a> {
+    return jvm::Value::from_string(self);
+  }
+}

@@ -1,9 +1,9 @@
 use std;
 use java;
+use java::ToValue;
 use java::lang::ClassLoader;
 use java::lang::IObject;
 use jvm;
-use jvm::ToValue;
 
 jvm_object!(Thread, "java/lang/Thread");
 

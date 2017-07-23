@@ -9,10 +9,7 @@
 
 #![feature(associated_consts)]
 
-extern crate jni_sys;
-
-#[link(name="jvm")]
-extern { }
+extern crate jvm;
 
 macro_rules! jvm_object {
   ($name:ident, $full_name:expr) => (
@@ -96,4 +93,3 @@ macro_rules! jvm_call {
 }
 
 pub mod java;
-pub mod jvm;
